@@ -14,8 +14,6 @@ from rasa_nlu.components import Component
 from rasa_nlu.training_data import Message
 from rasa_nlu.training_data import TrainingData
 
-from pyhanlp import *
-
 import os
 import glob
 
@@ -44,7 +42,6 @@ class CharTokenizer(Tokenizer, Component):
     def create(cls, cfg):
         # type: (RasaNLUModelConfig) -> CharTokenizer
         
-        #from pyhanlp import *
         component_conf = cfg.for_component(cls.name, cls.defaults)
                         
         return CharTokenizer(component_conf)
@@ -58,17 +55,15 @@ class CharTokenizer(Tokenizer, Component):
              ):
         # type: (...) -> CharTokenizer
                 
-        #from pyhanlp import *
 
         component_meta = model_metadata.for_component(cls.name)
-        #tokenizer = cls.init_jieba(tokenizer, component_meta)
 
-        return HanlpTokenizer(component_meta, HanLP)
+        return CharTokenizer(component_meta)
 
     @classmethod
     def required_packages(cls):
         # type: () -> List[Text]
-        return ["pyhanlp"]
+        return []
 
 
     def train(self, training_data, config, **kwargs):
@@ -92,12 +87,10 @@ class CharTokenizer(Tokenizer, Component):
             - text: the str(unicode) to be segmented.
         """
         tokens = []
-        print(tokenized)
         start = 0
-        for term in list(text):
-            w = str(term).split('/')[0]
-            width = len(w)
+        for char in list(text):
+            print(char)
             #yield (w, start, start + width)
-            tokens.append(Token(w, start))
-            start += width
+            tokens.append(Token(char, start))
+            start += 1
         return tokens
